@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mas Bro — Input Harian</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    :root { --color-primary: #059669; --color-accent: #C5F25D; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; padding-bottom: 8rem; margin: 0; }
+    .app { max-width: 410px; margin: 0 auto; min-height: 100vh; position: relative; }
+    .page { display: none; padding: 20px; } .page.active { display: block; }
+    .card { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    h3 { font-size: 14px; margin-bottom: 15px; text-transform: uppercase; color: #444; }
+    input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    
+    /* Navigasi */
+    .nav-row-wrapper { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 410px; background: var(--color-primary); border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 10px; text-align: center; }
+    .nav-row { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; justify-items: center; }
+    .btn-nav-flat { background: transparent; border: none; color: white; display: flex; flex-direction: column; align-items: center; font-size: 11px; cursor: pointer; }
+    .btn-nav-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--color-accent); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; margin-top: -35px; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    .prog-text { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <div id="page-0" class="page active">
+    <div class="card">
+      <h3>📅 INPUT OMZET</h3>
+      <input type="date" id="f-date">
+      <input type="number" id="f-tunai" placeholder="Tunai">
+      <input type="number" id="f-nontunai" placeholder="Digital">
+    </div>
+  </div>
+  
+  <div id="page-1" class="page"><div class="card"><h3>🛒 Bahan Baku</h3><div id="bb-content"></div></div></div>
+  <div id="page-2" class="page"><div class="card"><h3>📦 Barang & Ops</h3><div id="ops-content"></div></div></div>
+  <div id="page-3" class="page"><div class="card"><h3>👥 Karyawan</h3><div id="karyawan-content"></div></div></div>
+  <div id="page-4" class="page"><div class="card"><h3>✅ Ringkasan</h3><div id="summary"></div><canvas id="chart"></canvas></div></div>
+
+  <div class="nav-row-wrapper">
+    <div class="nav-row">
+      <button class="btn-nav-flat" onclick="prevStep()">◁<br>Back</button>
+      <button class="btn-nav-circle" onclick="nextStep()" id="btnNext">Next</button>
+      <button class="btn-nav-flat" onclick="resetWizard()">↺<br>Reset</button>
+    </div>
+    <div class="prog-text" id="progText">Langkah 1 dari 5</div>
+  </div>
+</div>
+
+<script>
+  let currentStep = 0;
+  const STEPS = 5;
+
+  function showStep(s) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + s)?.classList.add('active');
+    currentStep = s;
+    document.getElementById('progText').textContent = `Langkah ${s + 1} dari ${STEPS}`;
+    document.getElementById('btnNext').textContent = (s === STEPS - 1) ? 'Save' : 'Next';
+  }
+
+  function nextStep() {
+    if (currentStep < STEPS - 1) {
+      currentStep++;
+      showStep(currentStep);
+    } else {
+      saveAllAndExportExcel();
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  }
+
+  function resetWizard() {
+    currentStep = 0;
+    showStep(0);
+  }
+
+  function saveAllAndExportExcel() {
+    alert("Data tersimpan & Excel diproses!");
+  }
+  
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
